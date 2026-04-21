@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "contextmap": {
+      "type": "stdio",
+      "command": "contextmap",
+      "args": ["serve"]
+    }
+  }
+}

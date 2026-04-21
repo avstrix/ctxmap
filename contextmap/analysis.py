@@ -1,0 +1,181 @@
+"""
+Graph analysis: god nodes, surprising connections, suggested questions, architecture overview.
+Runs on the unified graph (structural + semantic layers combined).
+"""
+from __future__ import annotations
+
+from pathlib import Path
+
+from .store import GraphStore
+
+
+def analyze(store: GraphStore) -> dict:
+    """Return full analysis dict."""
+    gods = store.god_nodes(top_n=10)
+    surprises = store.surprising_connections(top_n=10)
+    stats = store.stats()
+    questions = _suggest_questions(gods, surprises, stats)
+    arch = _architecture_overview(store)
+
+    return {
+        "god_nodes": gods,
+        "surprising_connections": surprises,
+        "suggested_questions": questions,
+        "architecture": arch,
+        "stats": {
+            "nodes": stats.nodes,
+            "edges": stats.edges,
+            "files": stats.files,
+            "structural_only": stats.structural_only,
+        },
+    }
+
+
+def _suggest_questions(gods: list[dict], surprises: list[dict], stats) -> list[str]:
+    questions = []
+
+    if gods:
+        top = gods[0]
+        questions.append(f"What does {top.get('label', top['id'])} connect to and why is it so central?")
+
+    if surprises:
+        s = surprises[0]
+        src = s.get("source", "").split("::")[-1]
+        tgt = s.get("target", "").split("::")[-1]
+        if src and tgt:
+            questions.append(f"Why does {src} connect to {tgt} — is this coupling intentional?")
+
+    if stats.nodes > 0:
+        questions.append("Which files have the highest blast radius if changed?")
+        questions.append("Are there any isolated components with no callers or dependents?")
+
+    if not stats.structural_only:
+        questions.append("What architectural decisions are documented in the rationale nodes?")
+
+    return questions[:5]
+
+
+def _architecture_overview(store: GraphStore) -> dict:
+    """High-level structural summary."""
+    G = store.nx_graph()
+    if G.number_of_nodes() == 0:
+        return {}
+
+    import networkx as nx
+
+    # Find hub nodes (high betweenness)
+    if G.number_of_nodes() > 2:
+        try:
+            bc = nx.betweenness_centrality(G, k=min(50, G.number_of_nodes()))
+            hubs = sorted(bc.items(), key=lambda x: x[1], reverse=True)[:5]
+        except Exception:
+            hubs = []
+    else:
+        hubs = []
+
+    # Find isolated nodes
+    isolated = [n for n, d in G.degree() if d == 0]
+
+    # Count by kind
+    kind_counts: dict[str, int] = {}
+    for _, data in G.nodes(data=True):
+        kind = data.get("kind", "unknown")
+        kind_counts[kind] = kind_counts.get(kind, 0) + 1
+
+    return {
+        "hub_nodes": [{"id": n, "betweenness": round(b, 4)} for n, b in hubs],
+        "isolated_nodes": isolated[:10],
+        "node_kinds": kind_counts,
+    }
+
+
+def render_report(store: GraphStore, out_dir: Path) -> str:
+    """
+    Write GRAPH_REPORT.md — the one-page summary Claude reads before answering.
+    Returns the report text.
+    """
+    data = analyze(store)
+    stats = data["stats"]
+    lines = [
+        "# contextmap — Knowledge Graph Report",
+        "",
+        f"**Nodes:** {stats['nodes']}  **Edges:** {stats['edges']}  **Files:** {stats['files']}",
+        f"**Semantic layer:** {'not built — run `/contextmap semantic`' if stats['structural_only'] else 'built'}",
+        "",
+        "## God nodes (highest connectivity)",
+        "",
+    ]
+
+    for node in data["god_nodes"][:8]:
+        nid = node.get("id", "") if isinstance(node, dict) else str(node)
+        label = node.get("label", nid) if isinstance(node, dict) else nid
+        kind = node.get("kind", "?") if isinstance(node, dict) else "?"
+        degree = node.get("degree", 0) if isinstance(node, dict) else 0
+        loc = node.get("source_location", "") if isinstance(node, dict) else ""
+        file_ = Path(node.get("source_file", "") if isinstance(node, dict) else "").name
+        lines.append(f"- **{label}** ({kind}) — {degree} connections  {file_} {loc}")
+
+    lines += ["", "## Surprising connections", ""]
+    for s in data["surprising_connections"][:6]:
+        src = s.get("source", "").split("::")[-1]
+        tgt = s.get("target", "").split("::")[-1]
+        rel = s.get("relation", "?")
+        lines.append(f"- `{src}` → `{tgt}` ({rel})")
+
+    lines += ["", "## Architecture overview", ""]
+    arch = data["architecture"]
+    if arch.get("hub_nodes"):
+        lines.append("**Structural hubs (chokepoints):**")
+        for h in arch["hub_nodes"][:5]:
+            lines.append(f"  - `{h['id'].split('::')[-1]}` (betweenness {h['betweenness']})")
+
+    if arch.get("node_kinds"):
+        lines.append("")
+        kinds_str = ", ".join(f"{k}: {v}" for k, v in arch["node_kinds"].items())
+        lines.append(f"**Node breakdown:** {kinds_str}")
+
+    lines += ["", "## Suggested questions", ""]
+    for q in data["suggested_questions"]:
+        lines.append(f"- {q}")
+
+    lines += [
+        "",
+        "---",
+        "*Generated by contextmap. Run `/contextmap query <question>` to traverse the raw graph.*",
+    ]
+
+    report = "\n".join(lines)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "GRAPH_REPORT.md").write_text(report)
+    return report
+
+
+def detect_changes(store: GraphStore, changed_files: list[str]) -> dict:
+    """
+    Risk-scored change impact analysis.
+    Returns blast radius + affected tests + risk score per changed file.
+    """
+    blast = store.blast_radius(changed_files)
+    results = []
+
+    for path, affected_ids in blast.items():
+        # Separate test nodes from regular nodes
+        test_nodes = [nid for nid in affected_ids if "test" in nid.lower()]
+        non_test = [nid for nid in affected_ids if "test" not in nid.lower()]
+
+        # Risk score: more affected + no tests = higher risk
+        risk = min(1.0, len(affected_ids) / 20.0)
+        if not test_nodes:
+            risk = min(1.0, risk + 0.3)
+
+        results.append({
+            "file": path,
+            "affected_count": len(affected_ids),
+            "affected_nodes": sorted(non_test)[:20],
+            "affected_tests": test_nodes[:10],
+            "risk_score": round(risk, 2),
+            "has_test_coverage": len(test_nodes) > 0,
+        })
+
+    results.sort(key=lambda x: x["risk_score"], reverse=True)
+    return {"changes": results}

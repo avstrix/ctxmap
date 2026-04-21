@@ -1,0 +1,82 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# =========================
+# Packaging / build
+# =========================
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# =========================
+# Virtual environments
+# =========================
+.venv/
+venv/
+env/
+ENV/
+
+# =========================
+# Local databases / caches
+# =========================
+*.db
+*.db-wal
+*.db-shm
+.ctxmap/
+.contextmap-out/
+contextmap-out/
+
+# =========================
+# Environment variables
+# =========================
+.env
+.env.*
+*.env
+
+# =========================
+# Logs / temp
+# =========================
+*.log
+*.tmp
+*.temp
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDE / Editor
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# Testing / coverage
+# =========================
+.pytest_cache/
+.coverage
+htmlcov/
+
+# =========================
+# Jupyter (if ever used)
+# =========================
+.ipynb_checkpoints/
+
+# =========================
+# Misc
+# =========================
+node_modules/
