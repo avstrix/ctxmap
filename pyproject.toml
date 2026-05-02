@@ -57,6 +57,25 @@ Repository = "https://github.com/avstrix/ctxmap"
 Issues = "https://github.com/avstrix/ctxmap/issues"
 Changelog = "https://github.com/avstrix/ctxmap/blob/main/CHANGELOG.md"
 
+[tool.hatch.build.targets.wheel]
+packages = ["ctxmap"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "tests/",
+    ".github/",
+    ".venv/",
+    "*.db",
+    ".ctxmap/",
+    "contextmap-out/",
+    ".ctxmap-out/",
+    "benchmark.py",
+    "CONTEXT.md",
+    ".mcp.json",
+    "skills/",
+    "ARCHITECTURE.md",
+]
+
 [tool.ruff]
 line-length = 100
 target-version = "py310"
