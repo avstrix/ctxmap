@@ -26,10 +26,10 @@ jobs:
           pip install -e ".[dev]"
 
       - name: Lint
-        run: ruff check contextmap/
+        run: ruff check ctxmap/
 
       - name: Type check
-        run: mypy contextmap/ --ignore-missing-imports --no-strict-optional
+        run: mypy ctxmap/ --ignore-missing-imports --no-strict-optional
 
       - name: Test
         run: pytest tests/ -q --tb=short

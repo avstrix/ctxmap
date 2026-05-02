@@ -56,7 +56,7 @@ async def extract_semantic(
     try:
         import anthropic
     except ImportError:
-        logger.warning("anthropic not installed: pip install contextmap[semantic]")
+        logger.warning("anthropic not installed: pip install ctxmap[semantic]")
         return [], []
 
     if not path.exists():
@@ -179,15 +179,15 @@ async def run_semantic_pass(root: Path, store: GraphStore) -> dict:
 async def transcribe_video(path: Path, store: GraphStore) -> tuple[list[dict], list[dict]]:
     """
     Transcribe video/audio with faster-whisper, then run semantic extraction on transcript.
-    Requires: pip install contextmap[video]
+    Requires: pip install ctxmap[video]
     """
     try:
         from faster_whisper import WhisperModel
     except ImportError:
-        logger.error("faster-whisper not installed: pip install contextmap[video]")
+        logger.error("faster-whisper not installed: pip install ctxmap[video]")
         return [], []
 
-    cache_dir = path.parent / ".contextmap-out" / "transcripts"
+    cache_dir = path.parent / ".ctxmap-out" / "transcripts"
     cache_dir.mkdir(parents=True, exist_ok=True)
     transcript_path = cache_dir / f"{path.stem}.txt"
 

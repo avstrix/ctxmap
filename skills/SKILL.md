@@ -1,26 +1,26 @@
-# contextmap skill
+# ctxmap skill
 
-contextmap builds a structural + semantic knowledge graph of your codebase.
+ctxmap builds a structural + semantic knowledge graph of your codebase.
 
 ## Trigger
 
-When the user types `/contextmap`, invoke this skill.
+When the user types `/ctxmap`, invoke this skill.
 
 ## Commands
 
-- `/contextmap build` — full structural build (no API key needed)
-- `/contextmap update` — incremental update (only changed files, fast)
-- `/contextmap semantic` — LLM semantic extraction (requires ANTHROPIC_API_KEY)
-- `/contextmap query <question>` — search the graph
-- `/contextmap explain <symbol>` — explain a node and its connections
-- `/contextmap path <A> <B>` — shortest path between two nodes
-- `/contextmap status` — graph stats
-- `/contextmap report` — regenerate GRAPH_REPORT.md
-- `/contextmap watch` — auto-update on file changes
+- `/ctxmap build` — full structural build (no API key needed)
+- `/ctxmap update` — incremental update (only changed files, fast)
+- `/ctxmap semantic` — LLM semantic extraction (requires ANTHROPIC_API_KEY)
+- `/ctxmap query <question>` — search the graph
+- `/ctxmap explain <symbol>` — explain a node and its connections
+- `/ctxmap path <A> <B>` — shortest path between two nodes
+- `/ctxmap status` — graph stats
+- `/ctxmap report` — regenerate GRAPH_REPORT.md
+- `/ctxmap watch` — auto-update on file changes
 
 ## Always-on behavior
 
-If `contextmap-out/GRAPH_REPORT.md` exists in the repo:
+If `ctxmap-out/GRAPH_REPORT.md` exists in the repo:
 1. Read it before answering any architecture, code review, or onboarding question
 2. It contains: god nodes (top hubs), surprising connections, suggested questions
 

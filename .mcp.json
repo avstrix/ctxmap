@@ -1,8 +1,8 @@
 {
   "mcpServers": {
-    "contextmap": {
+    "ctxmap": {
       "type": "stdio",
-      "command": "contextmap",
+      "command": "ctxmap",
       "args": ["serve"]
     }
   }

@@ -3,8 +3,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "contextmap"
-version = "0.2.0"
+name = "ctxmap"
+version = "0.1.0"
 description = "Self-maintaining context map for AI coding assistants. Replaces CLAUDE.md with a file that updates itself on every git commit."
 readme = "README.md"
 license = { text = "MIT" }
@@ -45,17 +45,17 @@ semantic = ["anthropic>=0.30"]
 video = ["faster-whisper>=1.0", "yt-dlp>=2024.1"]
 communities = ["graspologic>=3.3"]
 embeddings = ["sentence-transformers>=3.0"]
-all = ["contextmap[semantic,video,communities,embeddings]"]
+all = ["ctxmap[semantic,video,communities,embeddings]"]
 dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "ruff>=0.4", "mypy>=1.10"]
 
 [project.scripts]
-contextmap = "contextmap.cli:main"
+ctxmap = "ctxmap.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/YOUR_USERNAME/contextmap"
-Repository = "https://github.com/YOUR_USERNAME/contextmap"
-Issues = "https://github.com/YOUR_USERNAME/contextmap/issues"
-Changelog = "https://github.com/YOUR_USERNAME/contextmap/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/avstrix/ctxmap"
+Repository = "https://github.com/avstrix/ctxmap"
+Issues = "https://github.com/avstrix/ctxmap/issues"
+Changelog = "https://github.com/avstrix/ctxmap/blob/main/CHANGELOG.md"
 
 [tool.ruff]
 line-length = 100

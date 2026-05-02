@@ -5,13 +5,13 @@
 ### New
 - `context.py` — section-level diff update model for CONTEXT.md
 - `CONTEXT.md` replaces `GRAPH_REPORT.md` as primary output
-- `contextmap context` CLI command
+- `ctxmap context` CLI command
 - Per-section hash tracking in `.ctxmap/section_hashes.json`
-- `## Notes` locked section — never overwritten by contextmap
+- `## Notes` locked section — never overwritten by ctxmap
 - 17 new tests for context generation (49 total)
 
 ### Changed
-- `contextmap build` and `contextmap update` now generate CONTEXT.md automatically
+- `ctxmap build` and `ctxmap update` now generate CONTEXT.md automatically
 - CLAUDE.md installer now references CONTEXT.md instead of GRAPH_REPORT.md
 - `_print_stats` filters builtins from hub display
 

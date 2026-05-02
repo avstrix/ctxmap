@@ -1,7 +1,7 @@
 """Tests for structural parser."""
 import tempfile
 from pathlib import Path
-from contextmap.parser import extract_file, _sanitize_name
+from ctxmap.parser import extract_file, _sanitize_name
 
 
 def _write(tmp_path, name, content):

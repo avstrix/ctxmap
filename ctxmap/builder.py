@@ -34,7 +34,7 @@ ALL_EXTENSIONS = CODE_EXTENSIONS | DOC_EXTENSIONS
 IGNORED_DIRS = {
     "node_modules", ".git", "__pycache__", ".venv", "venv",
     "dist", "build", ".next", ".nuxt", "coverage",
-    ".contextmap-out", "contextmap-out",
+    ".ctxmap-out", "ctxmap-out",
     "vendor", "target", "bin", "obj",
 }
 

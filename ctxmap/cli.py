@@ -1,5 +1,5 @@
 """
-contextmap CLI
+ctxmap CLI
 """
 from __future__ import annotations
 
@@ -17,14 +17,14 @@ console = Console()
 
 def _get_store(repo_root: Path):
     from .store import GraphStore
-    db_path = repo_root / ".contextmap-out" / "graph.db"
+    db_path = repo_root / ".ctxmap-out" / "graph.db"
     return GraphStore(db_path)
 
 
 @click.group()
 @click.version_option()
 def main():
-    """contextmap — unified structural + semantic knowledge graph for AI coding assistants."""
+    """ctxmap — unified structural + semantic knowledge graph for AI coding assistants."""
     logging.basicConfig(level=logging.WARNING, format="%(message)s")
 
 
@@ -209,12 +209,12 @@ def context(root, force):
 @main.command()
 @click.option("--root", default=".", type=click.Path())
 def report(root):
-    """Re-generate contextmap-out/GRAPH_REPORT.md (legacy)."""
+    """Re-generate ctxmap-out/GRAPH_REPORT.md (legacy)."""
     repo = Path(root).resolve()
     store = _get_store(repo)
     from .analysis import render_report
-    render_report(store, repo / "contextmap-out")
-    console.print("[green]✓ contextmap-out/GRAPH_REPORT.md updated")
+    render_report(store, repo / "ctxmap-out")
+    console.print("[green]✓ ctxmap-out/GRAPH_REPORT.md updated")
 
 
 @main.command()
@@ -247,7 +247,7 @@ def semantic(root, path_arg):
             with console.status("Running semantic pass on all docs/images..."):
                 stats = await run_semantic_pass(repo, store)
             console.print(f"[green]✓ Processed {stats['processed']}, cached {stats['cached']}, errors {stats['errors']}")
-            render_report(store, repo / "contextmap-out")
+            render_report(store, repo / "ctxmap-out")
 
     asyncio.run(_run())
 
@@ -283,7 +283,7 @@ def export(root, fmt):
     """Export graph to JSON or GraphML."""
     repo = Path(root).resolve()
     store = _get_store(repo)
-    out_dir = repo / "contextmap-out"
+    out_dir = repo / "ctxmap-out"
     out_dir.mkdir(exist_ok=True)
 
     if fmt == "json":
@@ -302,19 +302,19 @@ def export(root, fmt):
     "claude-code", "cursor", "codex", "opencode", "gemini", "copilot", "aider", "windsurf", "continue"
 })))
 def install(root, platform):
-    """Install contextmap for your AI coding tool (auto-detects if no platform given)."""
+    """Install ctxmap for your AI coding tool (auto-detects if no platform given)."""
     from .installer import install as do_install
     repo = Path(root).resolve()
     installed = do_install(repo, platform)
     for p in installed:
         console.print(f"[green]✓ {p} configured")
-    console.print("\nNext: run [bold]contextmap build[/bold] to build the graph.")
+    console.print("\nNext: run [bold]ctxmap build[/bold] to build the graph.")
 
 
 @main.command()
 @click.option("--root", default=".", type=click.Path())
 def uninstall(root):
-    """Remove contextmap configuration files."""
+    """Remove ctxmap configuration files."""
     from .installer import uninstall as do_uninstall
     repo = Path(root).resolve()
     removed = do_uninstall(repo)
@@ -327,7 +327,7 @@ def uninstall(root):
 def serve(root):
     """Start the MCP server (stdio transport) for use with Claude Code etc."""
     repo = Path(root).resolve()
-    db_path = repo / ".contextmap-out" / "graph.db"
+    db_path = repo / ".ctxmap-out" / "graph.db"
     from .server import run_server
     run_server(repo, db_path)
 
@@ -335,7 +335,7 @@ def serve(root):
 def _print_stats(store):
     s = store.stats()
     console.print(f"\n[bold]Graph:[/bold] {s.nodes} nodes · {s.edges} edges · {s.files} files")
-    console.print(f"[bold]Semantic layer:[/bold] {'[green]built[/green]' if not s.structural_only else '[yellow]not built[/yellow] (run: contextmap semantic)'}")
+    console.print(f"[bold]Semantic layer:[/bold] {'[green]built[/green]' if not s.structural_only else '[yellow]not built[/yellow] (run: ctxmap semantic)'}")
 
     gods = store.god_nodes(top_n=5)
     if gods:

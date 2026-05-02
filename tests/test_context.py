@@ -2,8 +2,8 @@
 import json
 from pathlib import Path
 import pytest
-from contextmap.store import GraphStore
-from contextmap.context import (
+from ctxmap.store import GraphStore
+from ctxmap.context import (
     build_context, token_estimate,
     _read_sections, _write_context,
     _section_input_hash, SECTION_MARKERS,

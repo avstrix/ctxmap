@@ -1,8 +1,8 @@
 """Tests for analysis module."""
 from pathlib import Path
 import pytest
-from contextmap.store import GraphStore
-from contextmap.analysis import analyze, render_report, detect_changes
+from ctxmap.store import GraphStore
+from ctxmap.analysis import analyze, render_report, detect_changes
 
 
 @pytest.fixture
@@ -47,7 +47,7 @@ def test_suggested_questions_nonempty(populated_store):
 def test_render_report(populated_store, tmp_path):
     out_dir = tmp_path / "out"
     report = render_report(populated_store, out_dir)
-    assert "GRAPH_REPORT" in report or "contextmap" in report
+    assert "GRAPH_REPORT" in report or "ctxmap" in report
     assert (out_dir / "GRAPH_REPORT.md").exists()
 
 

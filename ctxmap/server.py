@@ -1,7 +1,7 @@
 """
-MCP server for contextmap.
+MCP server for ctxmap.
 Exposes structural + semantic graph tools to Claude Code and other AI assistants.
-Start with: contextmap serve
+Start with: ctxmap serve
 """
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ def create_server(repo_root: Path, db_path: Path):
     from .builder import build, update
     from .analysis import analyze, render_report, detect_changes
 
-    mcp = FastMCP("contextmap")
+    mcp = FastMCP("ctxmap")
     store = GraphStore(db_path)
 
     # ─── Build / Update ──────────────────────────────────────
@@ -35,7 +35,7 @@ def create_server(repo_root: Path, db_path: Path):
     def build_graph(force: bool = False) -> str:
         """Build or rebuild the knowledge graph for the current repo."""
         stats = build(repo_root, store, force=force)
-        render_report(store, repo_root / "contextmap-out")
+        render_report(store, repo_root / "ctxmap-out")
         return json.dumps({"stats": stats, "report_written": True})
 
     @mcp.tool()
@@ -192,7 +192,7 @@ def create_server(repo_root: Path, db_path: Path):
         """
         Run LLM semantic extraction on docs/images/PDFs.
         If path given, runs on that file only. Otherwise runs on whole repo.
-        Requires ANTHROPIC_API_KEY and pip install contextmap[semantic].
+        Requires ANTHROPIC_API_KEY and pip install ctxmap[semantic].
         """
         from .semantic import extract_semantic, run_semantic_pass
 
@@ -206,7 +206,7 @@ def create_server(repo_root: Path, db_path: Path):
             return json.dumps({"nodes": len(nodes), "edges": len(edges)})
         else:
             stats = await run_semantic_pass(repo_root, store)
-            render_report(store, repo_root / "contextmap-out")
+            render_report(store, repo_root / "ctxmap-out")
             return json.dumps(stats)
 
     # ─── Export ──────────────────────────────────────────────
@@ -215,9 +215,9 @@ def create_server(repo_root: Path, db_path: Path):
     def export_graph(format: str = "json") -> str:
         """
         Export the graph. format: json | graphml
-        Writes to contextmap-out/graph.{format}
+        Writes to ctxmap-out/graph.{format}
         """
-        out_dir = repo_root / "contextmap-out"
+        out_dir = repo_root / "ctxmap-out"
         out_dir.mkdir(exist_ok=True)
 
         if format == "json":
@@ -256,7 +256,7 @@ Changed files: {changed_files}"""
 2. Call get_god_nodes() to understand the core concepts.
 3. Call get_surprising_connections() to flag non-obvious coupling.
 4. Call query_graph("entry point") or query_graph("main") to find where things start.
-5. Read contextmap-out/GRAPH_REPORT.md if it exists.
+5. Read ctxmap-out/GRAPH_REPORT.md if it exists.
 
 Produce: a plain-language guide covering what the codebase does, how it's organized,
 the key files to understand first, and any architectural surprises."""

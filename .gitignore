@@ -33,8 +33,8 @@ ENV/
 *.db-wal
 *.db-shm
 .ctxmap/
-.contextmap-out/
-contextmap-out/
+.ctxmap-out/
+ctxmap-out/
 
 # =========================
 # Environment variables

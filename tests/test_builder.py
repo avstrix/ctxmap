@@ -2,8 +2,8 @@
 import time
 from pathlib import Path
 import pytest
-from contextmap.builder import build, update, collect_files
-from contextmap.store import GraphStore
+from ctxmap.builder import build, update, collect_files
+from ctxmap.store import GraphStore
 
 
 @pytest.fixture

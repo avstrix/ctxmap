@@ -2,7 +2,7 @@
 import tempfile
 from pathlib import Path
 import pytest
-from contextmap.store import GraphStore
+from ctxmap.store import GraphStore
 
 
 @pytest.fixture

@@ -1,6 +1,6 @@
 # Architecture
 
-contextmap is a Python library + CLI + optional MCP server.
+ctxmap is a Python library + CLI + optional MCP server.
 
 ## Core idea
 
@@ -47,7 +47,7 @@ recent           last 10 file hashes by update time
 notes            never hashed — never rewritten
 ```
 
-On `contextmap update`:
+On `ctxmap update`:
 1. Compute current input hash for each section
 2. Compare to stored hash
 3. Only call the section builder if hash differs
