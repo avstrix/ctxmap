@@ -120,7 +120,7 @@ def _build_project_section(store: GraphStore, root: Path) -> str:
         ".go": "Go", ".rs": "Rust", ".java": "Java",
         ".rb": "Ruby", ".cs": "C#",
     }
-    seen: set = set()
+    seen: set[str] = set()
     for row in exts:
         ext = row["ext"] if row["ext"] else ""
         lang = ext_map.get(ext)
@@ -298,7 +298,7 @@ def _build_hot_files_section(store: GraphStore, root: Path) -> str:
             ))
 
     # Deduplicate
-    seen = {}
+    seen: dict[str, tuple[str, int]] = {}
     for name, path, deg in file_degrees:
         if name not in seen or deg > seen[name][1]:
             seen[name] = (path, deg)

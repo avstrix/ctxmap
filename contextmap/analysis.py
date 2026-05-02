@@ -150,6 +150,14 @@ def render_report(store: GraphStore, out_dir: Path) -> str:
     return report
 
 
+def _risk_key(entry: dict) -> float:
+    """Type-safe sort key for risk_score."""
+    val = entry.get("risk_score", 0.0)
+    if isinstance(val, (int, float)):
+        return float(val)
+    return 0.0
+
+
 def detect_changes(store: GraphStore, changed_files: list[str]) -> dict:
     """
     Risk-scored change impact analysis.
@@ -177,5 +185,5 @@ def detect_changes(store: GraphStore, changed_files: list[str]) -> dict:
             "has_test_coverage": len(test_nodes) > 0,
         })
 
-    results.sort(key=lambda x: x["risk_score"], reverse=True)
+    results.sort(key=_risk_key, reverse=True)
     return {"changes": results}
