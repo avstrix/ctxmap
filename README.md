@@ -3,11 +3,11 @@
 **A self-maintaining context map for AI coding assistants.**
 
 [![PyPI](https://img.shields.io/pypi/v/contextmap?style=flat-square)](https://pypi.org/project/contextmap/)
-[![CI](https://github.com/YOUR_USERNAME/contextmap/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/contextmap/actions/workflows/ci.yml)
+[![CI](https://github.com/avstrix/contextmap/actions/workflows/ci.yml/badge.svg)](https://github.com/avstrix/contextmap/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square)](https://www.python.org/)
 [![MIT License](https://img.shields.io/badge/license-MIT-yellow?style=flat-square)](LICENSE)
 
-contextmap solves one problem: **AI coding assistants re-read the same codebase context from scratch every session.**
+contextmap solves one problem: **AI coding assistants re-read your entire codebase from scratch every session.**
 
 It generates a single `CONTEXT.md` — a compressed, always-current map of your repo — that any AI reads at session start instead of scanning files. Updated automatically on every git commit, rewriting only the sections that actually changed.
 
@@ -15,7 +15,7 @@ It generates a single `CONTEXT.md` — a compressed, always-current map of your 
 pip install contextmap
 contextmap install    # adds CONTEXT.md reference to CLAUDE.md, sets git hook
 contextmap build      # first run — generates CONTEXT.md (~500 tokens)
-# from now on: auto-updates on every git commit (~300–600 tokens)
+# from now on: auto-updates on every git commit
 ```
 
 ---
@@ -101,6 +101,26 @@ Each section has a hash of its source inputs stored in `.ctxmap/section_hashes.j
 
 ---
 
+## Real-world benchmark
+
+Tested on [gstin-health](https://github.com/avstrix/gstin-health), a Next.js/TypeScript project:
+
+| | Tokens |
+|---|---|
+| Raw codebase (all .ts/.tsx/.json/.md files) | 57,003 |
+| CONTEXT.md | 640 |
+| Reduction | **98.9% · 89x smaller** |
+
+> Token counts measured with tiktoken (cl100k_base). Real savings depend on how much of your codebase a given session would otherwise scan — smaller repos see smaller absolute savings, larger repos see larger.
+
+More importantly: answer quality. Same question, two sessions:
+
+**Without CONTEXT.md** — generic Next.js boilerplate guess: `package.json`, `app/page.tsx`, `app/layout.tsx`.
+
+**With CONTEXT.md** — specific, accurate, prioritised: `lib/gstApi.ts` (31 connections, core of everything), `lib/scoreEngine.ts` (business logic), `app/api/gstin/[gstin]/route.ts` (API layer) — in the right order, with the right reasons.
+
+---
+
 ## Token economics
 
 | Operation | Cost | Frequency |
@@ -108,7 +128,7 @@ Each section has a hash of its source inputs stored in `.ctxmap/section_hashes.j
 | First build | ~5,000 tokens | Once |
 | Typical commit (3 files changed) | ~300–600 tokens | Per commit |
 | Session start (Claude reads CONTEXT.md) | ~500 tokens | Per session |
-| Without contextmap (Claude scans project) | ~8,000–50,000 tokens | Per session |
+| Without contextmap (Claude scans project) | ~5,000–57,000 tokens | Per session |
 
 ---
 
@@ -224,11 +244,11 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for full details.
 ## Contributing
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/contextmap
+git clone https://github.com/avstrix/contextmap
 cd contextmap
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
-pytest tests/ -q    # 49 tests
+pytest tests/ -q
 ```
 
 To improve a section: each `_build_*_section()` in `context.py` is independent and easy to extend.

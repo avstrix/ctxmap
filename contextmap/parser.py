@@ -219,7 +219,7 @@ def extract_file(path: Path) -> ExtractionResult:
 
         elif node.type in imp_types:
             imp_text = _node_text(node, src)
-            imp_id = f"{file_id}::import::{imp_text[:64]}"
+            f"{file_id}::import::{imp_text[:64]}"
             target_module = _parse_import_target(node, src, lang_name)
             if target_module:
                 result.edges.append({

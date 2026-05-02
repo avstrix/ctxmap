@@ -148,7 +148,6 @@ async def run_semantic_pass(root: Path, store: GraphStore) -> dict:
     Run semantic extraction on all doc/image files under root.
     Only processes files not already in semantic cache.
     """
-    from .builder import collect_files, SEMANTIC_EXTENSIONS as _
     from .builder import collect_files
 
     files = collect_files(root, SEMANTIC_EXTENSIONS)

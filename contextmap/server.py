@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -36,7 +35,7 @@ def create_server(repo_root: Path, db_path: Path):
     def build_graph(force: bool = False) -> str:
         """Build or rebuild the knowledge graph for the current repo."""
         stats = build(repo_root, store, force=force)
-        report = render_report(store, repo_root / "contextmap-out")
+        render_report(store, repo_root / "contextmap-out")
         return json.dumps({"stats": stats, "report_written": True})
 
     @mcp.tool()
@@ -168,7 +167,6 @@ def create_server(repo_root: Path, db_path: Path):
         High-level architectural summary: hub nodes, node kinds, isolated components.
         Good starting point for onboarding or architecture review.
         """
-        from .analysis import analyze
         data = analyze(store)
         return json.dumps({
             "architecture": data["architecture"],

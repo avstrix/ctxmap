@@ -5,9 +5,7 @@ Auto-detects which AI coding tools are installed and writes correct config for e
 from __future__ import annotations
 
 import json
-import os
 import shutil
-import subprocess
 import sys
 from pathlib import Path
 
@@ -94,7 +92,7 @@ def _contextmap_command() -> str:
     # Try uvx
     uvx = shutil.which("uvx")
     if uvx:
-        return f"uvx contextmap"
+        return "uvx contextmap"
     return sys.executable + " -m contextmap"
 
 

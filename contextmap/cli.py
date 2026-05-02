@@ -37,7 +37,6 @@ def build(root, force):
     store = _get_store(repo)
 
     from .builder import build as do_build
-    from .analysis import render_report
 
     with console.status("[bold green]Building graph..."):
         stats = do_build(repo, store, force=force)
@@ -204,7 +203,7 @@ def context(root, force):
     console.print(f"[green]✓ CONTEXT.md ({tokens} tokens)")
     console.print(f"  updated: {updated or 'none'}")
     console.print(f"  cached:  {cached or 'none'}")
-    console.print(f"  kept:    notes (manual section never touched)")
+    console.print("  kept:    notes (manual section never touched)")
 
 
 @main.command()

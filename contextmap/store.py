@@ -12,7 +12,7 @@ import threading
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Generator
+from typing import Generator
 
 import networkx as nx
 
@@ -247,7 +247,7 @@ class GraphStore:
 
                 hops = 0
                 while queue and hops < depth:
-                    next_queue = []
+                    next_queue: list = []
                     for nid in queue:
                         if nid in visited:
                             continue
